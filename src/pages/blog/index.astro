@@ -1,0 +1,43 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import SearchBar from '@/components/SearchBar.astro';
+import type { CollectionEntry } from 'astro:content';
+import { getAllTags, getSortedBlogPosts } from '@/utils/collectionData';
+import { PAGINATED_POSTS_PER_PAGE } from '@/constants';
+import Tags from '@/components/Tags.astro';
+import BlogList from '@/components/BlogList.astro';
+import Pagination from '@/components/Pagination.astro';
+
+export const prerender = true;
+
+const posts: CollectionEntry<'blog'>[] = await getSortedBlogPosts();
+const totalPageCount = Math.ceil(posts.length / PAGINATED_POSTS_PER_PAGE);
+
+const tags = await getAllTags();
+---
+
+<BaseLayout title='Blog'>
+    <div slot='hero-content'>
+        <div class='mb-10 space-y-12'>
+            <h1 class='text-5xl md:text-8xl font-bold text-center text-brand'>Blog</h1>
+            <h2 class='text-3xl text-center'>Articles about Web Development</h2>
+        </div>
+        <SearchBar
+            fieldName='query'
+            action='/blog/search'
+            label='Search Posts'
+            placeholder='Search posts...'
+        />
+    </div>
+
+    <div class='container my-4 pb-4'>
+        <Tags isLarge {tags} />
+        <BlogList posts={posts.slice(0, PAGINATED_POSTS_PER_PAGE)} />
+        <Pagination
+            currentPage={1}
+            lastPage={totalPageCount}
+            prev={undefined}
+            next={totalPageCount > 1 ? '/blog/2' : undefined}
+        />
+    </div>
+</BaseLayout>

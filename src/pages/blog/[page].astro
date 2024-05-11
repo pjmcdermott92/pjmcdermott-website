@@ -1,0 +1,51 @@
+---
+import BlogList from '@/components/BlogList.astro';
+import SearchBar from '@/components/SearchBar.astro';
+import Tags from '@/components/Tags.astro';
+import { PAGINATED_POSTS_PER_PAGE } from '@/constants';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { getAllTags, getSortedBlogPosts } from '@/utils/collectionData';
+import type { CollectionEntry } from 'astro:content';
+import Pagination from '@/components/Pagination.astro';
+
+export interface Props {
+    page: any;
+}
+
+export const prerender = true;
+
+export async function getStaticPaths({ paginate }: any) {
+    const posts: CollectionEntry<'blog'>[] = await getSortedBlogPosts();
+    return paginate(posts, { pageSize: PAGINATED_POSTS_PER_PAGE });
+}
+
+const tags = await getAllTags();
+const { page } = Astro.props;
+const { data: posts } = page;
+---
+
+<BaseLayout title='Blog'>
+    <div slot='hero-content'>
+        <div class='max-w-[650px] mb-10 space-y-12'>
+            <h1 class='text-5xl md:text-8xl font-bold text-center text-brand'>Blog</h1>
+            <h2 class='text-3xl text-center'>Articles about Web Development</h2>
+        </div>
+        <SearchBar
+            fieldName='query'
+            action='/blog/search'
+            label='Search Posts'
+            placeholder='Search posts...'
+        />
+    </div>
+
+    <div class='container my-4 pb-4'>
+        <Tags isLarge {tags} />
+        <BlogList {posts} />
+        <Pagination
+            currentPage={page.currentPage}
+            lastPage={page.lastPage}
+            prev={page.url.prev}
+            next={page.url.next}
+        />
+    </div>
+</BaseLayout>

@@ -2,7 +2,10 @@
 import BaseHead from '@/components/BaseHead.astro';
 import Footer from '@/components/Footer.astro';
 import Header from '@/components/Header.astro';
+import MobileMenu from '@/components/MobileMenu';
 import ScriptLoader from '@/components/ScriptLoader.astro';
+import SkipToContentLink from '@/components/SkipToContentLink.astro';
+import ToTopButton from '@/components/ToTopButton.astro';
 import { NAV_LINKS } from '@/constants';
 import { cn } from '@/utils';
 
@@ -19,10 +22,12 @@ export interface Props {
         <BaseHead {...Astro.props} />
     </head>
     <body class='text-lg relative min-h-screen flex flex-col justify-between overflow-x-hidden'>
+        <SkipToContentLink />
         <Header />
+        <MobileMenu client:only="react" />
         <main id='main' class='flex-1'>
             <section class='container flex justify-between items-start gap-12 pt-12'>
-                <div class='flex-1 p-4 max-w-[750px]'><slot name='hero-content' /></div>
+                <div class='flex-1 p-4'><slot name='hero-content' /></div>
                 <nav class='hidden lg:flex border-l border-slate-400/25 mt-12'>
                     <ul class='flex flex-col gap-3 px-6'>
                         {
@@ -48,6 +53,7 @@ export interface Props {
             <slot />
         </main>
         <Footer />
+        <ToTopButton />
         <ScriptLoader />
     </body>
 </html>

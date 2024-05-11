@@ -1,0 +1,31 @@
+---
+import { Icons } from './Icons';
+---
+
+<button
+    aria-label='Back to Top'
+    class='flex fixed bottom-24 -right-2 hover:-right-0 transition-none duration-200 h-10 w-16 items-center ps-2 rounded-ss-md rounded-es-md bg-blue-500 cursor-pointer focus:ring-2 ring-black opacity-50 hover:opacity-100'
+    title='Back to Top'
+    onclick='backToTop()'
+    style='display: none;'
+    data-scroll-top-btn
+>
+    <Icons.top className='size-8 text-white' />
+</button>
+
+<script is:inline>
+    const toTopBtn = document.querySelector('[data-scroll-top-btn]');
+
+    window.onscroll = () => {
+        if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+            toTopBtn.style.display = 'flex';
+        } else {
+            toTopBtn.style.display = 'none';
+        }
+    };
+
+    function backToTop() {
+        document.body.scrollTop = 0;
+        document.documentElement.scrollTop = 0;
+    }
+</script>

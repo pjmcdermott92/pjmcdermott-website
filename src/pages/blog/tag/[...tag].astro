@@ -1,0 +1,32 @@
+---
+import BlogList from '@/components/BlogList.astro';
+import Link from '@/components/Link.astro';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { capitalizeString } from '@/utils';
+import { getSortedPostsByTag } from '@/utils/collectionData';
+
+const { tag } = Astro.params;
+if (tag == undefined) Astro.redirect('/blog');
+
+const unslugifiedTag = tag?.split('-').join(' ');
+const posts = await getSortedPostsByTag(unslugifiedTag!);
+---
+
+<BaseLayout title={`Tag: ${capitalizeString(unslugifiedTag!)}`}>
+    <div slot='hero-content' class='mb-10 space-y-12'>
+        <h1 class='text-5xl md:text-8xl font-bold text-center text-brand'>Blog</h1>
+        <div class='flex flex-col items-center justify-center space-y-5'>
+            <h2 class='text-3xl'>
+                Tag: <span class='font-semibold'>{capitalizeString(unslugifiedTag!)}</span>
+            </h2>
+            <p class='text-xl opacity-65'>
+                {posts.length} Post{posts.length == 0 || posts.length > 1 ? 's' : ''}
+            </p>
+            <Link href='/blog'>Back to Blog</Link>
+        </div>
+    </div>
+
+    <div class='container my-4 pb-4'>
+        <BlogList {posts} />
+    </div>
+</BaseLayout>

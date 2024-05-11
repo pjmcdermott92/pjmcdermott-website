@@ -1,0 +1,34 @@
+---
+import { getSortedBlogPosts } from '@/utils/collectionData';
+import type { CollectionEntry } from 'astro:content';
+import BlogList from './BlogList.astro';
+
+export interface Props {
+    currentPost: CollectionEntry<'blog'>;
+}
+
+const RELATED_ARTICLES_COUNT = 3;
+
+const { currentPost } = Astro.props;
+const allPosts: CollectionEntry<'blog'>[] = await getSortedBlogPosts();
+
+// Filter our current post and then find related posts by tag
+const posts = allPosts
+    .filter(
+        post =>
+            post.slug !== currentPost.slug &&
+            post.data.tags.some(tag => currentPost.data.tags.includes(tag))
+    )
+    .slice(0, RELATED_ARTICLES_COUNT);
+---
+
+{
+    posts?.length ? (
+        <div class='bg-blue-400/25 py-12'>
+            <div class='container'>
+                <h3 class='text-3xl font-bold text-center'>Related Articles</h3>
+                <BlogList {posts} className='md:grid-cols-3' />
+            </div>
+        </div>
+    ) : null
+}
