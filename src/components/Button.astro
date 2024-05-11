@@ -1,0 +1,87 @@
+---
+import { cn } from '@/utils';
+
+export interface Props {
+    handler?: any;
+    isLink?: boolean;
+    href?: string;
+    newTab?: boolean;
+    className?: string;
+    id?: string;
+    type?: 'button' | 'submit' | 'reset' | null | undefined;
+    variant?: 'default' | 'secondary';
+    size?: 'xxs' | 'xs' | 'sm' | 'md' | 'lg';
+    title?: string;
+    text?: string;
+}
+
+const {
+    handler,
+    isLink,
+    href,
+    newTab,
+    className,
+    id,
+    type,
+    variant = 'default',
+    size = 'md',
+    title,
+    text,
+} = Astro.props;
+
+const colorClasses = {
+    default: 'text-white bg-blue-500 border-blue-500 hover:bg-transparent hover:text-foreground',
+    secondary: 'text-foreground bg-transparent border-foreground hover:bg-foreground hover:text-background',
+};
+
+const sizeClasses = {
+    xxs: 'text-xs px-2 py-1',
+    xs: 'text-xs px-4 py-1',
+    sm: 'text-sm px-6 py-1',
+    md: 'text-lg px-8 py-2',
+    lg: 'text-lg px-12 py-2',
+};
+
+const baseClasses =
+    'text-center rounded-md border inline-flex gap-x-4 justify-center transition no-underline';
+const classes = cn(
+    baseClasses,
+    className || '',
+    (colorClasses as any)[variant],
+    (sizeClasses as any)[size]
+);
+---
+
+{
+    !isLink && (
+        <button class={classes} onclick={handler} id={id || ''} title={title} type={type}>
+            <slot />
+            {text}
+        </button>
+    )
+}
+
+{
+    isLink && newTab && (
+        <a
+            href={href}
+            class={classes}
+            rel='noopener noreferrer'
+            target='_blank'
+            id={id || ''}
+            title={title}
+        >
+            <slot />
+            {text}
+        </a>
+    )
+}
+
+{
+    isLink && !newTab && (
+        <a href={href} class={classes} id={id || ''} title={title}>
+            <slot />
+            {text}
+        </a>
+    )
+}

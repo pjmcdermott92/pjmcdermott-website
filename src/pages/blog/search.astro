@@ -1,0 +1,43 @@
+---
+import BlogList from '@/components/BlogList.astro';
+import Link from '@/components/Link.astro';
+import SearchBar from '@/components/SearchBar.astro';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { getSortedBlogPosts } from '@/utils/collectionData';
+
+const query: string | null = Astro.url.searchParams.get('query');
+if (!query || query == undefined) return Astro.redirect('/blog');
+
+const allPosts = await getSortedBlogPosts();
+
+// Filter posts by query
+const posts = allPosts.filter(post => {
+    const matchTitle: boolean = post.data.title.toLowerCase().includes(query!.toLowerCase());
+    const matchSlug: boolean = post.body.toLowerCase().includes(query!.toLowerCase());
+    const matchBody: boolean = post.body.toLowerCase().includes(query!.toLowerCase());
+
+    return matchTitle || matchSlug || matchBody;
+});
+---
+
+<BaseLayout title='Blog'>
+    <div slot='hero-content'>
+        <div class='text-center space-y-10 mb-12'>
+            <h1 class='text-3xl md:text-5xl font-bold'>Search Results</h1>
+            <p class='my-4 text-xl'>Showing resuls for: <span class='font-semibold'>{query}</span></p>
+            <Link href='/blog'>Back to Blog</Link>
+        </div>
+
+        <SearchBar
+            fieldName='query'
+            action='/blog/search'
+            label='Search Posts'
+            placeholder='Search posts...'
+            value={query!}
+        />
+    </div>
+
+    <div class='container my-4 pb-4'>
+        {posts?.length ? <BlogList {posts} /> : <p class='text-center mt-14'>No posts found</p>}
+    </div>
+</BaseLayout>

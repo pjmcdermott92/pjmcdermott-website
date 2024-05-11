@@ -1,0 +1,108 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Tags from '@/components/Tags.astro';
+import { calculateReadingTime } from '@/utils';
+import { formatDate } from '@/utils/date-formatters';
+import { Image } from 'astro:assets';
+import { getCollection } from 'astro:content';
+import RelatedPosts from '@/components/RelatedPosts.astro';
+
+export const prerender = true;
+
+export async function getStaticPaths() {
+    const blogEntries = await getCollection('blog');
+
+    return blogEntries.map(entry => ({
+        params: { slug: entry.slug },
+        props: { entry },
+    }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+const readingTime = calculateReadingTime(entry?.body);
+---
+
+<BaseLayout title={entry?.data.title} description={entry?.data.description}>
+    <div slot='hero-content' class='max-w-[750px] mx-auto space-y-8'>
+        <h1 class='text-3xl md:text-5xl font-bold'>
+            {entry?.data.title}
+        </h1>
+
+        <div class='flex gap-2'>
+            <div
+                class='size-10 rounded-full flex items-center justify-center bg-blue-500 font-semibold text-xl text-white'
+            >
+                {entry?.data.author.split('')[0]}
+            </div>
+            <div class='text-sm'>
+                <p class='font-semibold'>{entry?.data.author}</p>
+                <p class='flex items-center gap-2'>
+                    {formatDate(entry?.data.post_date)}
+                    <span class='inline-block size-1 bg-gray-400 rounded-full'></span>
+                    {readingTime} minute read
+                </p>
+            </div>
+        </div>
+
+        <div class=''>
+            <Tags tags={entry?.data.tags} />
+        </div>
+    </div>
+
+    <div class='container mt-8'>
+        <article class='pb-5 max-w-4xl mx-auto prose'>
+            {
+                entry?.data.image ? (
+                    <Image
+                        src={`/uploads/${entry?.data.image}`}
+                        alt={entry?.data.title}
+                        width={1024}
+                        height={1280}
+                        class='mt-4 mb-8 mx-auto rounded-md'
+                        loading='eager'
+                    />
+                ) : null
+            }
+
+            <Content />
+        </article>
+    </div>
+    <RelatedPosts currentPost={entry} />
+</BaseLayout>
+
+<style is:inline>
+    article > h3 {
+        margin: 1rem 0;
+        font-size: 1.25rem;
+    }
+
+    article > h4 {
+        margin: 1rem 0;
+        font-size: 1.2rem;
+    }
+
+    article > p {
+        margin: 1rem 0;
+    }
+
+    article > ul {
+        padding-left: 2rem;
+        list-style: circle;
+    }
+
+    article a {
+        color: #3b6cbb;
+        text-decoration: underline;
+    }
+
+    article a:hover {
+        text-decoration: none;
+        transition: 250ms ease-in-out;
+    }
+
+    .astro-code {
+        padding: 1rem;
+        border-radius: 5px;
+    }
+</style>

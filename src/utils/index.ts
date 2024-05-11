@@ -1,4 +1,10 @@
 import { AVERAGE_READING_WPM } from '@/constants';
+import { type ClassValue, clsx } from 'clsx';
+import { twMerge } from 'tailwind-merge';
+
+export function cn(...inputs: ClassValue[]) {
+    return twMerge(clsx(inputs));
+}
 
 export function capitalizeString(string: string) {
     if (typeof string !== 'string' || string.length == 0) {

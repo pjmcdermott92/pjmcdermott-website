@@ -1,0 +1,93 @@
+---
+title: 'Why I Use Custom Data Attributes for Selecting Elements in JavaScript'
+description: 'What if there was a simple, clean, and concise way of selecting and manipulating DOM elements with JavaScript? And what if it can conform to the Separation of Concerns principle?'
+post_date: 2020-12-23
+author: 'Patrick McDermott'
+image: '122120-js-custom-data-attributes.webp'
+tags: ['javascript', 'development']
+slug: why-i-use-custom-data-attributes-for-selecting-elements-in-javascript
+---
+
+In programming, there is a principle called Separation of Concerns (or SoC, for short). In a nutshell, SoC means breaking code down to separate, individual components/functions/etc that each have a very specific purpose. By separating code into individual functions, it makes the code easier to maintain and follow when reviewed, and it allows for much easier expansion to the code base.
+
+Separation of Concerns is a very broad topic when it comes to the programming world. Related to web development, we can consider SoC to be the reason why it is recommended that we separate our CSS, HTML, and JavaScript, for example, into separate files. Sure, we could use inline or embedded styles and even JavaScript code directly in our HTML, but this tends to add a lot of bloat to our HTML documents and it makes it very difficult to review the code or make changes. For this reason, it is always best to have separate CSS and JavaScript files, and to link to them from our HTML.
+
+Getting into more advanced JavaScript, we should go even further by breaking our code into modules, where each module serves a specific purpose and only the elements of that module that need to be available elsewhere are exported. This makes for very manageable and scalable code. That topic is beyond the scope of this article, though. This article will focus on custom data attributes and why I use them and recommend that you also use them for selecting JavaScript elements.
+
+If you have been programming for any length of time, you have probably either seen and/or written JavaScript code that looks like this:
+
+```js
+document.getElementByClassName('my-element');
+```
+
+There is nothing wrong with selecting DOM elements this way — the code works absolutely fine, and more often than not, you will see this method used for selecting and manipulating HTML DOM elements. However, there is one small catch that could lead to broken code when you use class names as JavaScript selectors.
+
+I’m sure that you aware of the fact that class names are most commonly used in CSS to style elements. To be clear, there is nothing wrong with using class names to both add styles with CSS and to manipulate elements with JavaScript, syntactically or functionally. The problem comes in when either you or somebody on your development team decides that a class name is not specific enough, and that it needs to be changed. There is no real way of knowing whether the class is used for JavaScript or CSS or both, and in order to ensure that your code still functions correctly, every single file needs to be reviewed to make sure that changing the class name of one element does not break the code anywhere.
+
+This does not sound like that big of an issue on smaller applications, but just imagine that you have a large app with hundreds or even thousands of lines of CSS and hundreds or thousands of lines of JavaScript. Reviewing all of the code for a single class name change can be time consuming, and you are bound to miss something somewhere, breaking your code and making you contemplate throwing your computer through a third-story window. (I am — of course — not speaking from experience here… 😉)
+
+There are a few different ways of separating your JavaScript selectors from your CSS class name selectors. One option is to assign elements an ID and to use the ID tag as your JavaScript selector. This would work perfectly fine functionally, unless you need to select more than one element. The document.`getElementById()` method only returns one element, and semantically you are only supposed to assign one ID to just one element in your HTML.
+
+Another option is to add an additional class name to each element that you want to select and to prefix it with something like js-. This is a common way that I have seen developers separate their code, and I have, in fact, worked with a fellow developer that prefers to write his code this way. For example, if he wants to have an element that can be dynamically toggled between active and inactive, his code might look something like this:
+
+```html
+<div class="menu js-menu inactive">...</div>
+```
+
+In this example, he styles the element with the class name of _“menu”_, and he selects the element in JavaScript using the `getElementsByClassName()` method to select the class name of js-menu, and the third class can be changed from active to inactive dynamically with JavaScript. This method works, and it is not too complicated to understand. However, it does make the class attributes on HTML elements look wonky when adding so many classes to them. What if there was yet an even simpler, cleaner, and more concise way of selecting and manipulating elements?
+
+_Enter: HTML custom data attributes!_
+
+#### What the Heck Are Data Attributes?
+
+If you are not familiar with data attributes, they are essentially custom attributes that can be assigned to any HTML element, and they can be called anything you want, and have any value that you want. Custom data attributes will always start with **_data-_**. For example, you could have an element that looks like this:
+
+```html
+<div class='drop-menu' data-drop-menu-container>
+    ...
+</div>
+```
+
+In this case, we assigned the custom attribute **_data-drop-menu-container_** to the element. We can then move into our JavaScript and select this element using the ``document.querySelector()` method, which would look like this:
+
+```js
+const dropMenuContainerElement = document.querySelector('[data-drop-menu-container]');
+```
+
+We can even assign custom values to our data attributes, like so:
+
+```html
+<div class="my-class" data-is-expanded="false">...</div>
+<div class="my-class" data-children-count="5">...</div>
+```
+
+Some of the reasons that data attributes are perfect for JavaScript selectors is that first, you can be more expressive with your selectors. Instead of having the class “active” or “inactive” being applied to an element, you can add a data attribute and either set it to _“true”_ or _“false”_, or _“active”_ or _“inactive”_. Here’s an example:
+
+```html
+<div class="active">...</div>
+<div class="inactive">...</div>
+```
+
+This looks a little bit messy and requires two different CSS class definitions based on the applied class.
+
+A better approach would be:
+
+```html
+<div class="my-class" data-mobile-menu="inactive">...</div>
+<div class="my-class" data-mobile-menu="active">...</div>
+```
+
+Or:
+
+```html
+<div class="my-class" data-active="inactive">...</div>
+<div class="my-class" data-active="active">...</div>
+```
+
+This allows for cleaner CSS and your elements are much more descriptive, making them easier to decipher when they are being reviewed by future you or your development team. This method also takes the Separation of Concerns concept to an even deeper level. In this case, you are segregating your class names to CSS exclusively and your custom data attributes to your JavaScript almost exclusively.
+
+There are exceptions to the concept of only using classes for CSS and only using data attributes for JavaScript. For example, you can create custom tooltips much easier by using a _data-tooltip_ attribute, and this allows you to assign the value of the tooltip much easier in CSS, and you will not have to use any JavaScript to show your tooltip on hover. There are other examples of where custom data attributes can play a key role in CSS, and there are also instances where using class names in JavaScript is the easiest and best way to manipulate an element. But whenever possible I highly recommend using data attributes for JavaScript and leaving class names for CSS.
+
+Using custom data attributes may not prove to be useful at first, especially in smaller applications, but I assure you that you will be quite thankful that you separated your CSS selectors from your JavaScript selectors as your project scales in size. It cleans up your code a lot and it makes things much clearer and more descriptive. If you look over my code, you will see that I tend to use data attributes a lot. I use them for creating CSS-only tooltips, selecting JavaScript elements, and toggling between true/false or active/inactive states.
+
+_This article was first published on my <a href="https://medium.com/@pjmcdermott92/why-i-use-custom-data-attributes-for-selecting-elements-in-javascript-58166fe074a8" target="_blank" rel="noreferrer noopener">Medium</a> page on December 21, 2020._

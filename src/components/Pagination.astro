@@ -1,0 +1,35 @@
+---
+import Button from './Button.astro';
+import { Icons } from './Icons';
+
+export interface Props {
+    currentPage: number;
+    lastPage: number;
+    next: string | undefined;
+    prev: string | undefined;
+}
+
+const { currentPage, lastPage, next, prev } = Astro.props;
+---
+
+{
+    (prev || next) && (
+        <div class='flex items-center justify-center gap-3 mt-8 pt-4 border-t'>
+            {currentPage > 1 && (
+                <Button isLink href={prev} size='xxs' variant='secondary'>
+                    <Icons.prev className='size-4' />
+                    <span class='sr-only'>Previous Page</span>
+                </Button>
+            )}
+            <p>
+                Page <strong>{currentPage}</strong> of <strong>{lastPage}</strong>
+            </p>
+            {currentPage < lastPage && (
+                <Button isLink href={next} size='xxs' variant='secondary'>
+                    <Icons.next className='size-4' />
+                    <span class='sr-only'>Next Page</span>
+                </Button>
+            )}
+        </div>
+    )
+}

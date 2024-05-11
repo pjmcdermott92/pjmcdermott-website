@@ -1,0 +1,10 @@
+<!--Theme loader -->
+<script is:inline>
+    if (typeof window !== 'undefined') {
+        const theme =
+            JSON.parse(localStorage.getItem('pmc_theme')) ||
+            (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+
+        document.documentElement.dataset.theme = theme;
+    }
+</script>

@@ -1,16 +1,31 @@
 ---
-
+import SocialLinks from '@/components/SocialLinks.astro';
+import AboutSection from '@/components/homepage/AboutSection.astro';
+import LatestPosts from '@/components/homepage/LatestPosts.astro';
+import BaseLayout from '@/layouts/BaseLayout.astro';
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<BaseLayout>
+    <div slot='hero-content'>
+        <p class='text-md md:text-xl font-semibold text-brand leading-none'>Patrick McDermott</p>
+        <h1 class='text-5xl md:text-8xl tracking-tight font-bold'>
+            Full-Stack<br />
+            <span class='text-brand'>Web Developer</span>
+        </h1>
+        <p class='my-4 text-xl'>
+            Hello, I&apos;m Patrick McDermott — a full-stack web developer, creating beautiful and
+            easy to use websites and web applications. I specialize in JavaScript/TypeScript
+            technologies, but also work in other languages, too! I am also a blogger, writing about
+            web development and programming.
+        </p>
+    </div>
+
+    <div class='mt-12 bg-blue-400/25 py-16'>
+        <div class='container flex flex-col md:flex-row items-center justify-center gap-4'>
+            <p class='text-3xl'>Find me on:</p>
+            <SocialLinks />
+        </div>
+    </div>
+    <LatestPosts />
+    <AboutSection />
+</BaseLayout>

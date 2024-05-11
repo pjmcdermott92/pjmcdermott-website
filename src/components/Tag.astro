@@ -1,0 +1,19 @@
+---
+import { capitalizeString, cn, slugify } from '@/utils';
+
+export interface Props {
+    tag: string;
+    isLarge?: boolean;
+}
+
+const { tag, isLarge = false } = Astro.props;
+
+const baseClasses =
+    'rounded-full border border-gray-600 hover:opacity-70 text-current no-underline';
+const classes = cn(isLarge ? 'px-3 py-1 text-base' : 'px-2 py-1 text-xs', baseClasses);
+const href = '/blog/tag/' + slugify(tag);
+---
+
+<a href={href} class={classes} title={`Show posts with the tag '${capitalizeString(tag)}'`}>
+    {capitalizeString(tag)}
+</a>

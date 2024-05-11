@@ -1,0 +1,43 @@
+---
+import { Image } from 'astro:assets';
+import picOfMe from '@/images/me-homepage.png';
+import Link from '../Link.astro';
+import Button from '../Button.astro';
+---
+
+<div class='bg-blue-300/25'>
+    <div class='container py-16'>
+        <p class='text-center text-2xl tracking-wide uppercase text-blue-500 font-semibold'>About Me</p>
+        <h3 class='text-3xl font-bold text-center'>Developer and Blogger</h3>
+
+        <div class='flex flex-col md:flex-row items-center gap-12 my-10 md:my-12'>
+            <div class='md:w-2/3 space-y-8 text-center md:text-left'>
+                <p class='text-xl'>
+                    I am a full-stack web developer with a passion for building stunning, modern,
+                    and professional applications and websites. My forte is JavaScript, but I also
+                    work in other languages as well, including PHP, C#, and occasionally Python.
+                </p>
+                <p class='text-lg'>
+                    Aside from programming, I also enjoy writing and sharing my knowledge with
+                    others. Check out my <Link href='/blog'>blog</Link>
+                    to read some of my latest posts on technology, programming, and life as a whole.
+                    On this blog, I try to share stories about my struggles and successes as a programmer,
+                    and some tips, tricks, and tools that I have learned or came across throughout my
+                    development journey.
+                </p>
+
+                <Button
+                    isLink
+                    href='/about'
+                    size='lg'
+                    variant='secondary'
+                    className='block'
+                    text='Learn more about me'
+                />
+            </div>
+            <div class='flex-1'>
+                <Image src={picOfMe} alt='Me' class='block mx-auto' />
+            </div>
+        </div>
+    </div>
+</div>

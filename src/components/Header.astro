@@ -1,0 +1,20 @@
+---
+import { Icons } from './Icons';
+import ThemeToggle from './ThemeToggle';
+---
+
+<header class='p-4 w-full border-t-4 border-t-brand'>
+    <div class='container mx-auto flex items-center justify-between'>
+        <a
+            href='/'
+            class='flex items-center space-x-3 border-0'
+            title='Patrick McDermott - Web Developer'
+            aria-label='Patrick McDermott'
+        >
+            <Icons.logo className='size-14' />
+        </a>
+        <div class='h-8 w-20'>
+            <ThemeToggle client:only='react' />
+        </div>
+    </div>
+</header>

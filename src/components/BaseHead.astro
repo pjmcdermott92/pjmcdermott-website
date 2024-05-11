@@ -1,0 +1,21 @@
+---
+import '@/styles/global.css';
+
+export interface Props {
+    title?: string;
+    description?: string;
+    permalink?: string;
+}
+
+const { title, description, permalink } = Astro.props;
+const pageTitle = `${title?.length ? title + ' -' : ''} Patrick McDermott - Web developer`;
+---
+
+<meta charset='utf-8' />
+<meta name='viewport' content='width=device-width, initial-scale=1.0' />
+<!-- <link rel='icon' type='image/png' href='images/my-logo.png' /> -->
+<meta name='generator' content={Astro.generator} />
+
+<title>{pageTitle}</title>
+<meta name='title' content={pageTitle} />
+<meta name='description' content={description || 'Full-stack Web Developer'} />

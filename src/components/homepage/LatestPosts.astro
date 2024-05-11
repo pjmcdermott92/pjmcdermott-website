@@ -1,0 +1,18 @@
+---
+import { getSortedBlogPosts } from '@/utils/collectionData';
+import BlogList from '../BlogList.astro';
+import Button from '../Button.astro';
+
+const HOMEPAGE_POST_COUNT = 3;
+
+const allPosts = await getSortedBlogPosts();
+const posts = allPosts.slice(0, HOMEPAGE_POST_COUNT);
+---
+
+<div class='container py-12 md:py-24'>
+    <h3 class='text-4xl font-bold text-center mb-12'>Latest Articles</h3>
+    <BlogList {posts} className='md:grid-cols-3' />
+    <div class='text-center pt-8'>
+        <Button isLink href='/blog' text='More Posts' />
+    </div>
+</div>

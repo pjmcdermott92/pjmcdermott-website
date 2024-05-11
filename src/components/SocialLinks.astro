@@ -1,0 +1,25 @@
+---
+import { Icons } from './Icons';
+import Link from './Link.astro';
+
+const SOCIAL_LINKS = [
+    { title: 'Github', icon: Icons.github, href: 'https://github.com/pjmcdermott92' },
+    { title: 'LinkedIn', icon: Icons.linkedin, href: 'https://www.linkedin.com/in/pjmcdermott92/' },
+    { title: 'Medium', icon: Icons.medium, href: 'https://medium.com/@pjmcdermott92' },
+];
+---
+
+<div class='flex items-center justify-center flex-wrap gap-4'>
+    {
+        SOCIAL_LINKS.map(({ title, icon: Icon, href }) => (
+            <Link
+                isExternal
+                href={href}
+                classList='size-8 opacity-85 hover:opacity-100'
+                title={title}>
+                <Icon className='fill-foreground text-foreground' />
+                <span class='sr-only'>{title}</span>
+            </Link>
+        ))
+    }
+</div>
