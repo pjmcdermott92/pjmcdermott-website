@@ -1,0 +1,15 @@
+---
+import Tag from './Tag.astro';
+
+export interface Props {
+    tags: string[];
+    isLarge?: boolean;
+}
+
+const { tags, isLarge = false } = Astro.props;
+const allTags = new Set(tags);
+---
+
+<div class='flex items-center gap-2 flex-wrap my-2'>
+    {[...allTags].sort().map(tag => <Tag tag={tag} isLarge={isLarge} />)}
+</div>

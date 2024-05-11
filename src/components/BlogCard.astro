@@ -1,0 +1,45 @@
+---
+import { calculateReadingTime } from '@/utils';
+import { formatDate } from '@/utils/date-formatters';
+import { Image } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+import Link from './Link.astro';
+import Tags from './Tags.astro';
+
+export interface Props {
+    post: CollectionEntry<'blog'>;
+}
+
+const { post } = Astro.props;
+const href = '/blog/' + post.slug;
+const postImg = '/uploads/' + post.data.image;
+const readingTime = calculateReadingTime(post.body);
+---
+
+<article class='overflow-hidden space-y-2'>
+    <div class='flex items-center justify-center w-full object-cover mb-4'>
+        <a href={href}>
+            <Image
+                src={postImg}
+                alt={post.data.title}
+                width={540}
+                height={960}
+                class='rounded-md aspect-video'
+                loading='eager'
+            />
+        </a>
+    </div>
+    <div>
+        <h3 class='text-xl font-bold'>
+            <a href={href} class='no-underline text-current hover:underline'>{post.data.title}</a>
+        </h3>
+        <p class='flex items-center gap-2 mb-4 text-sm opacity-85'>
+            {formatDate(post.data.post_date)}
+            <span class='inline-block size-1 bg-gray-400 rounded-full'></span>
+            {readingTime} minute read
+        </p>
+        <Tags tags={post.data.tags} />
+        <p class='my-4 text-base'>{post.data.description}</p>
+        <Link href={href}>Read Post</Link>
+    </div>
+</article>

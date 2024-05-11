@@ -1,0 +1,39 @@
+---
+import { cn } from '@/utils';
+
+export interface Props {
+    href: string;
+    classList?: string;
+    isExternal?: boolean;
+    id?: any;
+    title?: string;
+}
+
+const { href, classList, isExternal = false, id, title } = Astro.props;
+const classes = cn(
+    'group text-blue-600 underline hover:no-underline transition-all duration-300 ease-in-out realtive',
+    classList || null
+);
+---
+
+{
+    isExternal && (
+        <a
+            class={classes}
+            id={id || ''}
+            href={href}
+            rel='noreferrer nofollow'
+            target='_blank'
+            title={title || ''}>
+            <slot />
+        </a>
+    )
+}
+
+{
+    !isExternal && (
+        <a class={classes} id={id || ''} href={href} title={title || ''}>
+            <slot />
+        </a>
+    )
+}

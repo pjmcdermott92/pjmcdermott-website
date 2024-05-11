@@ -1,0 +1,207 @@
+---
+title: 'Building Custom Hooks in React'
+description: 'A hook is a function that allows us to “hook” into React features, such as lifecycle methods and state. React actually has seven pre-defined hooks that we can use in our applications, but did you know that you can easily create your own custom hooks to use across your React application?'
+post_date: 2022-01-27
+author: 'Patrick McDermott'
+image: '012722-react-custom-hooks.webp'
+tags: ['react', 'javascript']
+slug: building-custom-hooks-in-react
+---
+
+The power of using React hooks makes building out scalable applications so much easier. Thanks to the introduction of hooks in React 16.8, writing React components is as simple as writing a JavaScript function - literally. In React years past, in order to have access to state or a component's lifecycle methods (such as componentDidMount() or componentWillUnmount()), you pretty much had to write out class components. Now, with the new React hooks - such as useState() and useEffect() - class components are, for the most part, no longer needed. Of course, you can still write your components as classes, since React - at least for the foreseeable future - has no plans to remove classes from react.
+
+#### What _is_ a Hook?
+
+Simply put, a hook is a function that allows us to “hook” into React features, such as lifecycle methods and state. React actually has seven pre-defined hooks that we can use in our applications: useState(), useEffect(), useContext(), useRef(), useReducer(), useCallback(), and useMemo(). I’m not going to get into the specifics of what each of these hooks does and how to use them, as that is beyond the focus of this article. If you would like to learn about these hooks, you can do so on the <a href="https://reactjs.org/docs/hooks-intro.html" target="_blank" rel="noopener nofollower">React documentation page</a>.
+
+In my experience, the most commonly used hooks are _useState()_, _useEffect()_, _useContext()_, and _useReducer()_. I use these four hooks all the time throughout my React applications, as they allow me to set up global access to my application state, trigger different logical operations whenever a component loads or global state changes, and manage complex pieces of state that would otherwise require a lot more code to accomplish.
+
+#### How about Custom Hooks?
+
+Let’s talk about custom hooks. Custom hooks are reusable functions that you write that allow you to reuse component logic across several components. You can implement custom hooks simply by extracting the piece of logic that you need to reuse into its own function (and file), and import it into each component that you wish to use it in. A key thing to remember is that React hooks always start with the verb _‘use’_ - for instance, _useFetch()_. When you name your hook function with the use keyword, React knows that this is a hook.
+
+Custom hooks can be very useful in React for many different situations. For instance, in a financial portal app that I am currently building, I am using several custom hooks (combined with other React hooks - such as _useState()_, _useContext()_, and _useReducer()_) to add in custom, reusable features, such as a Toaster Alert function that allows me to invoke a standardized alert message to the user from any component in the application, without redefining the Alert logic. The custom hook for this service is called _useAlerts()_, and it gives me access to the _setAlert()_ function that I use to push an alert to the application’s global state.
+
+I also have a custom hook set up, along with a context provider, that allows me to call up a reusable modal anywhere in the application, simply by importing my custom _useModal()_ hook. These custom hooks, combined with React’s _useContext()_ and _useReducer()_ hooks, allow me to build a scalable application, and keep my code as DRY as possible.
+
+#### How do I create a custom hook?
+
+Creating custom hooks in React is relatively simple. Let’s take a look at an example of a component that is fetching placeholder data from the JSON placeholder API to populate a to-do list application.
+
+Our initial component might be written like so:
+
+```jsx
+//Todo.jsx
+
+import { useState, useEffect } from "react";
+
+export default function Todo() {
+  const [todos, setTodos] = useState([]);
+
+  useEffect(() => {
+    const getTodos = async () => {
+      const res = await fetch(
+        "https://jsonplaceholder.typicode.com/todos?_limit=10"
+      );
+      const data = await res.json();
+
+      setTodos(data);
+    };
+    getTodos();
+  }, []);
+
+  return (
+    <>
+      <h1>ToDo List</h1>
+      <ul>
+        {todos.map(({ id, title, completed }) => {
+          if (completed)
+            return (
+              <li key={id}>
+                <s>{title}</s>
+              </li>
+            );
+          else return <li key={id}>{title}</li>;
+        })}
+      </ul>
+    </>
+  );
+}
+```
+
+This works out great for a small application, such as a single to-do page. But what if we need to use this same fetch logic inside of another component? We do not want to have to duplicate the same code again in the other component to use this function. This is where React custom hooks will come in handy. We can extract all of the fetch logic from this component into its own file called _useFetch.js_, where we will also export a default function named _useFetch()_.
+
+```jsx
+// hooks/useFetch.js
+
+import { useEffect, useState } from "react";
+
+export default function useFetch() {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    setLoading(true);
+    setData(null);
+    setError(null);
+
+    fetch("https://jsonplaceholder.typicode.com/todos?_limit=10")
+      .then((res) => res.json())
+      .then((res) => setData(res))
+      .catch(() => setError(true))
+      .finally(() => setLoading(false));
+  }, []);
+
+  return [loading, error, data];
+}
+
+```
+
+Now, we can simply import our _useFetch()_ function into our _Todo.jsx_ component (and any other component that needs access to this function) like so:
+
+```jsx
+// Todo.jsx
+
+import { useState, useEffect } from "react";
+import useFetch from "./hooks/useFetch";
+
+export default function Todo() {
+  const [loading, error, data] = useFetch();
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>An error occurred</p>;
+  
+  return (
+    <>
+      <h1>ToDo List</h1>
+      <ul>
+        {data.map(({ id, title, completed }) => {
+          if (completed)
+            return (
+              <li key={id}>
+                <s>{title}</s>
+              </li>
+            );
+          else return <li key={id}>{title}</li>;
+        })}
+      </ul>
+    </>
+  );
+}
+```
+
+Let’s review what we have done in this custom hook:
+
+- We have extracted the fetch logic from our _Todo.jsx_ component and placed it inside of its own file called _useFetch.js_. The logic is contained within a function called _useFetch()_. We are then returning the data that is fetched from this API call from our hook. We are also returning a loading and error state.
+- In the _todo.js_ component, we are importing our _useFetch()_ hook, and utilizing it just like any other React hook. We have successfully created a reusable hook that we can import into any function across our React application, and use - without having to duplicate the fetch data logic.
+
+#### One step further
+
+We have created a custom React hook that allows us to fetch data from the JSON placeholder API from any component, without rewriting the logic. This helps to make for a scalable application - but, what if we need to fetch data from a different URL inside of one of our components? We could write another fetch function for this - or, we could make our _useFetch()_ hook even more reusable.
+
+Let’s remove the hard-coded API url from the custom hook, and instead pass a url parameter into the _useFetch()_ function:
+
+```jsx
+// hooks/useFetch.js
+
+import { useEffect, useState } from "react";
+
+export default function useFetch(url) {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    setLoading(true);
+    setData(null);
+    setError(null);
+
+    fetch(url)
+      .then((res) => res.json())
+      .then((res) => setData(res))
+      .catch(() => setError(true))
+      .finally(() => setLoading(false));
+  }, [url]);
+
+  return [loading, error, data];
+}
+
+```
+
+Now, inside of our _Todo.jsx_ component, we can simply pass in the URL to our JSON Placeholder api. Everything works exactly the same as before, except now we have an even more reusable function that can be used to fetch data from any URL inside of any component.
+
+```jsx
+// Todo.jsx
+
+import { useState, useEffect } from "react";
+import useFetch from "./hooks/useFetch";
+
+export default function Todo() {
+  const [loading, error, data] = useFetch("https://jsonplaceholder.typicode.com/todos?_limit=10");
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>An error occurred</p>;
+  
+  return (
+    <>
+      <h1>ToDo List</h1>
+      <ul>
+        {data.map(({ id, title, completed }) => {
+          if (completed)
+            return (
+              <li key={id}>
+                <s>{title}</s>
+              </li>
+            );
+          else return <li key={id}>{title}</li>;
+        })}
+      </ul>
+    </>
+  );
+}
+```
+
+This is the power of React custom hooks. The example above is a very simple example of how to create a custom hook in React. Hooks can become even more complex than the one above, and you can even use other React hooks and custom hooks within your custom hooks to really make your application scalable.
+
+Thank you for reading, and Happy Coding 👩‍💻!

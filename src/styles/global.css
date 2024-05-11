@@ -1,0 +1,52 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700&display=swap');
+
+:root {
+    --background: 210, 40%, 96%;
+    --foreground: 222, 47%, 11%;
+
+    --accent: 0, 0%, 33%;
+    --brand: 207, 86%, 57%;
+}
+
+:root[data-theme='dark'] {
+    --background: 217, 33%, 17%;
+    --foreground: 214, 32%, 91%;
+
+    --accent: 0, 0%, 81%;
+}
+
+::selection {
+    @apply bg-foreground text-background;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    @apply bg-background text-foreground font-light;
+}
+
+body[data-menu-open] {
+    overflow-y: hidden;
+}
+
+h1,
+h2,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: 'Poppins', sans-serif;
+    @apply tracking-wide font-bold;
+}
+
+p {
+    @apply font-light;
+}
+
+input:not([type='search']):not([id='theme']),
+textarea {
+    @apply w-full px-2 py-2 text-base border border-foreground bg-white/25 rounded-md;
+}
