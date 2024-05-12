@@ -26,7 +26,7 @@ html {
 
 body {
     font-family: "Reddit Sans", sans-serif;
-    @apply bg-background text-foreground font-light;
+    @apply bg-background text-foreground;
 }
 
 body[data-menu-open] {
@@ -51,4 +51,9 @@ p {
 input:not([type='search']):not([id='theme']),
 textarea {
     @apply w-full px-2 py-2 text-base border border-foreground bg-white/25 rounded-md;
+}
+
+input:not([type='search']):not([id='theme']):disabled,
+textarea:disabled {
+    @apply opacity-45 border-gray-400 cursor-not-allowed;
 }

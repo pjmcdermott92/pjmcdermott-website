@@ -1,0 +1,19 @@
+---
+import Button from '@/components/Button.astro';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { Frown } from 'lucide-react';
+---
+
+<BaseLayout title='Page not found'>
+    <div
+        slot='hero-content'
+        class='flex flex-col items-center justify-center overflow-x-hidden text-center p-2'
+    >
+        <Frown className='size-60 opacity-35' />
+        <h1 class='mt-4 text-4xl font-extrabold'>
+            <span class='opacity-55'>404:</span> Not Found
+        </h1>
+        <p>The page that you are looking for could not be found.</p>
+        <Button isLink href='/' variant='secondary' text='Back Home' className='mt-12' />
+    </div>
+</BaseLayout>

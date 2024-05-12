@@ -1,4 +1,5 @@
 ---
+import Button from '@/components/Button.astro';
 import SocialLinks from '@/components/SocialLinks.astro';
 import AboutSection from '@/components/homepage/AboutSection.astro';
 import LatestPosts from '@/components/homepage/LatestPosts.astro';
@@ -18,6 +19,10 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
             technologies, but also work in other languages, too! I am also a blogger, writing about
             web development and programming.
         </p>
+        <div class='pt-4 space-x-4'>
+            <Button isLink href='/blog' variant='secondary' text='Read my Blog' />
+            <Button isLink href='/about' variant='secondary' text='Get to Know Me' />
+        </div>
     </div>
 
     <div class='mt-12 bg-blue-400/25 py-16'>

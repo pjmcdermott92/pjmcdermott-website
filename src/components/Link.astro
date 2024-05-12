@@ -7,9 +7,10 @@ export interface Props {
     isExternal?: boolean;
     id?: any;
     title?: string;
+    text?: string;
 }
 
-const { href, classList, isExternal = false, id, title } = Astro.props;
+const { href, classList, isExternal = false, id, title, text } = Astro.props;
 const classes = cn(
     'group text-blue-500 underline hover:no-underline transition-all duration-300 ease-in-out realtive',
     classList || null
@@ -24,8 +25,10 @@ const classes = cn(
             href={href}
             rel='noreferrer nofollow'
             target='_blank'
-            title={title || ''}>
+            title={title || ''}
+        >
             <slot />
+            {text}
         </a>
     )
 }
@@ -34,6 +37,7 @@ const classes = cn(
     !isExternal && (
         <a class={classes} id={id || ''} href={href} title={title || ''}>
             <slot />
+            {text}
         </a>
     )
 }

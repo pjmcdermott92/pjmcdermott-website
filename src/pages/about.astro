@@ -1,0 +1,81 @@
+---
+import Button from '@/components/Button.astro';
+import Link from '@/components/Link.astro';
+import myAboutImage from '@/images/me-glowing.png';
+import picOfMe from '@/images/me-homepage.png';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { Image } from 'astro:assets';
+---
+
+<BaseLayout title='Get to Know Patrick'>
+    <div slot='hero-content'>
+        <p class='text-md md:text-xl font-semibold text-brand leading-none'>Get to know Patrick</p>
+        <h1 class='text-3xl md:text-4xl font-bold'>Full-stack developer and writer</h1>
+
+        <div class='mt-8 space-y-8'>
+            <div class='float-right p-4 ps-8 hidden md:block'>
+                <Image src={myAboutImage} alt='Me' loading='eager' />
+                <caption>
+                    <p class='text-sm text-center opacity-85'>Me, trying to look good.</p>
+                </caption>
+            </div>
+            <p class='text-xl pt-8'>
+                Hi, I'm Patrick McDermott. I'm a full-stack web developer, specializing in mostly
+                JavaScript technologies, but I also work in PHP, C#, and a few other languages. My
+                passion for programming began at an early age when I built my first web page in high
+                school. Over 15 years later, my passion for development has only grown! I build web
+                applications and solutions for a wide range of purposes, from small businesses,
+                startups, and a public school district.
+            </p>
+
+            <p>
+                Though I have always had a passion for code, I took a different career path early on
+                in life. I pursued my other passion of cooking and spent 10 years working in various
+                capacities for various restaurants from cafeterias to fine-dining restaurants. I
+                have even assisted with opening a couple of restaurant concepts. Working my way from
+                the dish pit to sous chef, I learned many valuable skills and gained a lot of
+                experience in teamwork, people and time management, and communication. I also
+                learned valuable skills in designing effective processes and procedures, and I
+                fine-tuned my attention to detail.
+            </p>
+
+            <p>
+                Moving from the kitchen into a technology role was a natural transition for me, as a
+                lot of the soft skills of running a kitchen and the creativity and eye for detail of
+                designing dishes and building recipes transferred over into building creative,
+                effective, and functional websites and web applications. The problem-solving and
+                analytical skills that I learned as a chef have allowed me to face nearly any
+                programming challenge methodically and come up with an effective and performant
+                solution for the problem.
+            </p>
+            <hr />
+            <p>
+                Aside from programming, I also enjoy writing and sharing my knowledge with others.
+                Check out my <Link href='/blog' text='blog' /> to read some of my latest posts on technology,
+                programming, and life as a whole. On this blog, I try to share stories about my struggles
+                and successes as a programmer, and some tips, tricks, and tools that I have learned or
+                came across throughout my development journey.
+            </p>
+            <p><Link href="/blog" text="Read my blog" /></p>
+        </div>
+    </div>
+
+    <div class='bg-gray-400/25'>
+        <div class='container px-8 mt-8 py-12 flex flex-col md:flex-row items-center'>
+            <Image src={picOfMe} width={240} alt='Me' class='block order-2 md:order-1' />
+            <div class='space-y-6 flex-1 md:ms-20 mb-12 order-1 md:order-2'>
+                <h3 class='text-2xl text-brand'>My Story</h3>
+                <p>
+                    Learn a little bit more about my journey as a self-taught programmer, and the
+                    struggles, successes, and adventures that I have had along that journey. I have
+                    included things that I have learned along the way, recommendations for others
+                    looking to start their programming journey, and even a sneak peak at a few of
+                    the very first websites that I ever built (spoiler alert: I have come a long way
+                    since those early days!).
+                </p>
+
+                <Button isLink href='/blog/my-story' variant='secondary' text='Read my Story' />
+            </div>
+        </div>
+    </div>
+</BaseLayout>

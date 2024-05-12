@@ -72,6 +72,12 @@ const readingTime = calculateReadingTime(entry?.body);
 </BaseLayout>
 
 <style is:inline>
+    article > h2 {
+        margin: 1rem 0;
+        font-size: 1.5rem;
+        color: hsl(var(--brand));
+    }
+
     article > h3 {
         margin: 1rem 0;
         font-size: 1.25rem;
@@ -99,6 +105,18 @@ const readingTime = calculateReadingTime(entry?.body);
     article a:hover {
         text-decoration: none;
         transition: 250ms ease-in-out;
+    }
+
+article img {
+    border-radius: .25rem;
+}
+
+    article blockquote {
+        margin: 1rem;
+        padding: 1rem;
+        background: #00000015;
+        border-radius: .5rem;
+        border-left: 4px solid hsl(var(--brand));
     }
 
     .astro-code {
