@@ -34,7 +34,7 @@ let links = SOCIAL_LINKS;
 if (linksToShow) links = links.slice(0, linksToShow);
 ---
 
-<div class='flex items-center flex-wrap gap-x-4 gap-y-8'>
+<div class='flex flex-col md:flex-row items-center flex-wrap gap-x-4 gap-y-8'>
     {
         links.map(({ title, icon: Icon, background, href }) => (
             <Link
