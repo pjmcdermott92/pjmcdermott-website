@@ -1,0 +1,21 @@
+---
+import ContactForm from '@/components/ContactForm';
+import SocialLinks from '@/components/SocialLinks.astro';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+---
+
+<BaseLayout title='Contact Me'>
+    <div slot='hero-content' class='mb-10 space-y-12'>
+        <h1 class='text-5xl md:text-8xl font-bold text-center text-brand'>Contact Me</h1>
+        <h2 class='text-3xl text-center'>Get in touch via email or social media</h2>
+
+        <div class='w-max mx-auto'>
+            <SocialLinks />
+        </div>
+    </div>
+
+    <div class='container my-8'>
+        <h2 class='text-center text-2xl'>Contact via Email</h2>
+        <ContactForm client:load />
+    </div>
+</BaseLayout>

@@ -1,24 +1,54 @@
 ---
+import { cn } from '@/utils';
 import { Icons } from './Icons';
 import Link from './Link.astro';
 
+export interface Props {
+    linksToShow?: number;
+}
+
 const SOCIAL_LINKS = [
-    { title: 'Github', icon: Icons.github, href: 'https://github.com/pjmcdermott92' },
-    { title: 'LinkedIn', icon: Icons.linkedin, href: 'https://www.linkedin.com/in/pjmcdermott92/' },
-    { title: 'Medium', icon: Icons.medium, href: 'https://medium.com/@pjmcdermott92' },
+    {
+        title: 'Github',
+        icon: Icons.github,
+        background: 'bg-gray-700',
+        href: 'https://github.com/pjmcdermott92',
+    },
+    {
+        title: 'LinkedIn',
+        icon: Icons.linkedin,
+        background: 'bg-blue-500',
+        href: 'https://www.linkedin.com/in/pjmcdermott92/',
+    },
+    {
+        title: 'Medium',
+        icon: Icons.medium,
+        background: 'bg-black',
+        href: 'https://medium.com/@pjmcdermott92',
+    },
 ];
+
+const { linksToShow } = Astro.props;
+let links = SOCIAL_LINKS;
+
+if (linksToShow) links = links.slice(0, linksToShow);
 ---
 
-<div class='flex items-center justify-center flex-wrap gap-4'>
+<div class='flex items-center flex-wrap gap-x-4 gap-y-8'>
     {
-        SOCIAL_LINKS.map(({ title, icon: Icon, href }) => (
+        links.map(({ title, icon: Icon, background, href }) => (
             <Link
                 isExternal
-                href={href}
-                classList='size-8 opacity-85 hover:opacity-100'
-                title={title}>
-                <Icon className='fill-foreground text-foreground' />
-                <span class='sr-only'>{title}</span>
+                {href}
+                {title}
+                classList='flex items-center gap-2 text-2xl text-current no-underline hover:underline'
+            >
+                <span
+                    class={cn('size-12 flex items-center justify-center rounded-full', background)}
+                >
+                    <Icon className='size-8 fill-white text-transparent' />
+                </span>
+                <span>{title}</span>
             </Link>
         ))
     }
