@@ -1,0 +1,82 @@
+/*
+This is needed to remove all Tailwind classes and apply the native Github CSS to the markdown viewer
+
+.markdown-body class comes from Github markdown
+*/
+
+.markdown-editor {
+    --color-dark: #334155;
+    --color-white: #ffffff;
+    --font-monospace: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono',
+        'Courier New', monospace;
+
+    all: revert;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    border-radius: 0.5rem;
+    border: 1px solid var(--color-dark);
+    height: 375px;
+    overflow: hidden;
+}
+
+.markdown-editor * {
+    box-sizing: border-box;
+}
+
+.markdown-editor__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.5rem;
+    font-family: var(--font-monospace);
+    background-color: var(--color-dark);
+    color: var(--color-white);
+}
+
+.markdown-editor__header--heading {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    text-transform: uppercase;
+}
+
+.markdown-editor__editor {
+    flex: 1;
+    height: 100%;
+    display: flex;
+    align-items: stretch;
+    overflow: hidden;
+    gap: 1rem;
+}
+
+.markdown-editor__editor--textarea {
+    position: relative;
+    height: 100%;
+    flex: 1;
+}
+
+.markdown-editor__editor--textarea > textarea {
+    all: unset;
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    padding: 0.5rem;
+    font-family: var(--font-monospace);
+    background-color: hsl(0, 2%, 78%, 25%);
+    resize: none;
+    border: none;
+    border-radius: 0 !important;
+    overflow-y: auto;
+}
+
+.markdown-body {
+    flex: 1;
+    height: 100%;
+    padding: 1rem 0.5rem 0;
+    overflow-y: auto;
+}
+
+.markdown-body * {
+    all: revert;
+}

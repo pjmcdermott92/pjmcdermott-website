@@ -1,0 +1,258 @@
+---
+title: 'Markdown Crash Course'
+description: 'Markdown is a powerful and lightweight markup language used for creating formatted text. Markdown is a powerful and lightweight markup language used for creating formatted text. This blog post will walk you through how to use Markdown - starting with the basics of formatting text, all the up to more extended markdown features.'
+post_date: 2023-08-04
+author: 'Patrick McDermott'
+image: 'markdown-crash.png'
+tags: ['development']
+slug: markdown-crash
+---
+
+import MarkdownEditor from '../../components/blog/MarkdownEditor/MarkdownEditor.jsx';
+import Link from '../../components/Link.astro';
+
+## What is Markdown?
+
+Markdown is a powerful and lightweight markup language used for creating formatted text. Markdown can be written in any plaintext editor and converted to HTML - or any other format. Markdown is a very straightforward language to learn, and it is used all over the place, from Reddit comments to Github readme files. Markdown can also be used to write entire blog posts - which is exactly what I use to write the posts on this very blog.
+
+Every post that you see on this blog is written in Markdown - more specifically, MDX - which is just like Markdown, but it allows me to use custom React and Astro components within my markdown. Markdown also supports HTML tags.
+
+This blog post will walk you through how to use Markdown - starting with the basics of formatting text, all the up to more extended markdown features. This blog post serves two purposes: first, to walk you through how to write in markdown, and second to act as a documentation sheet for me, since I use Markdown all the time at work and for writing posts right here on my own blog.
+
+This article is just a quick reference guide for the most common Markdown syntax. For more detailed information, including an in-depth of the do's and don'ts of Markdown, checkout the <Link isExternal href="https://www.markdownguide.org/basic-syntax/" text="Markdown documentation" />. Feel free to read this article in its entirety, or just skip around to the elements you want to see using the jumplist below.
+
+**Jump to:**
+
+-   [Headings](#headings)
+-   [Paragraphs](#paragraphs)
+-   [Bold and Italic Text](#bold)
+-   [Strikethrough Text](#strikethrough)
+-   [Subscript and Superscript](#supersub)
+-   [Links](#links)
+-   [Images](#images)
+-   [Blockquotes](#blockquotes)
+-   [Lists - Ordered and Unordered](#lists)
+-   [Tables](#tables)
+-   [Horizontal Rule](#horizontalr)
+-   [Code](#code)
+
+As you check out each element of Markdown, take a look at the editor that I have included for live previews of the concepts. Feel free to edit the markdown and see your result to practice the concepts reviewed in this article.
+
+### The Basics of Markdown
+
+Since markdown is primarily used for formatting text, I am going to talk about some of the basic text layouts that can be done with Markdown. Creating a Markdown file is as easy as ending your text file with the extension `.md` or `.mdx` for enhanced Markdown.
+
+#### <a name="headings"></a>Headings
+
+Let's start with headings. Markdown has six heading levels - just as HTML does. In a Markdown file, a heading is represented by prepending the heading with an octothorpe (more commonly known as a pound sign, or a hashtag symbol): `#`.
+
+To create different heading levels, start your heading text by adding one to six `#` pound symbols. The number of octothorpes that you put before your heading will represent the heading level, with a single `#` representing the largest (or level 1) heading, and six `######` symbols representing the smallest (or level 6) heading. Just remember to put a single space between your `#` symbols and the text, so that the markdown will be parsed as a heading.
+
+If you were to inspect the HTML markup that is output when the markdown is parsed, you would notice that the heading elements are wrapped within standard HTML heading tags, from `<h1>` to `<h6>`.
+
+<MarkdownEditor
+    client:visible
+    defaultValue={`# Heading Level 1
+## Heading Level 2
+### Heading Level 3
+#### Heading Level 4
+##### Heading Level 5
+###### Heading Level 6
+`}
+/>
+
+#### <a name="paragraphs"></a>Paragraphs
+
+In markdown, paragraphs are the default text layout. When you just simply type text into a markdown file, it will be parsed into a paragraph element by default. Inspecting the HTML markup will reveal your text blocks wrapped in the default HTML `<p>` tags. To create new paragraphs, you need to add a blank line between the two blocks of text that you want to put into separate paragraphs. You can also add two spaces after a character to push the next character onto a new line within the same paragraph.
+
+<MarkdownEditor
+    client:visible
+    defaultValue={`This is a paragraph.
+
+This is another paragraph.
+
+This is  
+a paragraph with a line break.
+`}
+/>
+
+#### <a name="bold"></a>Bold and Italic Text
+
+Two of the most common text formatting types are bold text and italic text. In markdown, indicating bold and/or italic text is pretty simple. You just need to wrap your text in either one or two asterisks `*` or underscores `_`. The asterisks and underscores are interchangeable, and using either charter will yield the same output.
+
+> **Important Tip:** Some markdown parsers do not agree on how to handle underscores, especially in the middle of a word. For full compatibility, it is highly recommended to use asterisks `*` instead of underscores `_` for text formatting.
+
+A single asterisk or underscore, such as `*text*` or `_text_` will result in _italic_ text, and two asterisks or underscores, such as `**text**` or `__text__` will result in **bold** text.
+
+You can also combine bold and italic text by simply wrapping your text in either three underscores or three asterisks. This will result in your parsed output being both **_italic and bold_**.
+
+<MarkdownEditor
+    client:visible
+    defaultValue={`This is *italic*
+    
+This is **bold**
+
+This is both **_bold and italic_**
+`}
+/>
+
+#### <a name="strikethrough"></a>Strikethrough Text
+
+Strikethrough text is text that is crossed off. This is an extended markdown feature, and is created by wrapping your text in two `~` characters. (I believe that these are called tildes).
+
+<MarkdownEditor
+    client:visible
+    defaultValue={`~~Strikethrough~~
+`}
+/>
+
+#### <a name="supersub"></a>Sub and Superscript
+
+Two more fairly common text formats are subscript and superscript. Creating subscript in markdown can be done by wrapping the text you want to appear in subscript in a single tilde `~`. To create a superscript, you can wrap your text in a single caret symbol `^`.
+
+Note that in some “flavors” of markdown (including <Link isExternal href="https://github.com/sindresorhus/github-markdown-css" text="Github’s flavor of Markdown" /> - which is what the embedded markdown editors in this post use), using the tilde and caret symbols does not work. For this reason, you can also just wrap your superscript and subscript text in the standard HTML `<sub>` and `<sup>` tags.
+
+<MarkdownEditor
+    client:visible
+    defaultValue={`This is a ^superscript^
+
+This is a ~subscript~
+
+This is also a <sup>superscript</sup>
+
+This is also a <sub>subscript</sub>
+`}
+/>
+
+#### <a name="links"></a>Links
+
+If you are using Markdown to write blog articles like I am, you may find that you want to include links in your markdown. There are a few different ways to write links in Markdown:
+
+The first way allows you to create a link with custom text, by wrapping the text that you want to display in square brackets, and then following this with the URL that you wish to link to in parentheses. This works for both absolute and relative links.
+
+If you are wanting to just show a URL and link to that URL, you can also simply wrap the URL in `<>`. In some extended flavors of Markdown, just simply typing a URL will parse to a link, but not in every flavor.
+
+<MarkdownEditor
+    client:visible
+    defaultValue={`[This is a link to Google](https://google.com)
+
+[This is a relative link](/blog/markdown-crash)
+
+<https://www.pjmcdermott.com>
+
+http://www.pjmcdermott.com
+`}
+/>
+
+#### <a name="images"></a>Images
+
+You can also embed images into your Markdown. Images look very similar to Links in syntax, with the key difference being that images start with an exclamation mark `!`. Much like links, you will have text wrapped in square brackets, followed by a URL in parentheses. In the case of an image, the text in the square bracket will serve as the alternative text for accessibility and SEO. The URL in the parentheses is the source path of the image.
+
+<MarkdownEditor
+    client:visible
+    defaultValue={`![A random image from the web](https://source.unsplash.com/random/200x200?sig=1")`}
+/>
+
+#### <a name="blockquotes"></a>Blockquotes
+
+Blockquotes are typically used to quote another source. Blockquotes are created in Markdown by adding a right bracket `>` character before your text. You can nest blockquotes by using multiple right brackets `>`.
+
+<MarkdownEditor
+    client:visible
+    defaultValue={`> This is a Blockquote
+>> This is a nested blockquote
+`}
+/>
+
+#### <a name="lists"></a>Lists - Ordered and Unordered
+
+Just like in HTML, Markdown has two types of lists: ordered lists and unordered lists. Ordered lists are numbered, while unordered lists are bulleted.
+
+Creating an unordered (bulleted) list in Markdown can be done in one of three ways: you can either use a dash `-`, an asterisk `*`, or a plus sign `+` before each item in your list. To create an ordered (numbered) list, simple add the number and a period `.` before each list item.
+
+Lists can also be nested by adding a tab (or four spaces) before the list delimiter.
+
+<MarkdownEditor
+    client:visible
+    defaultValue={`- An Unordered list item
+- Another Unordered list item
+    * This is a nested list item
+- Here is a final Unordered list item
+    1. With an Ordered list nested inside
+
+1. An Ordered list items
+    1. This is a nested Order List Item
+2. Another Ordered List Item
+    - We can also nest Unordered lists inside of Ordered lists
+1. This will be Item # 3 (even though I numbered it as 1)
+   `}
+   />
+
+#### <a name="tables"></a>Tables
+
+Markdown also supports creating tables for organizing and displaying data. Tables are a bit tricky and complex to create in Markdown.
+
+To add a table, use three or more hyphens `---` to create each column’s header, and use pipes `|` to separate each column. For compatibility, you should also add a pipe on either end of the row.
+
+<MarkdownEditor
+    client:visible
+    defaultValue={`|Header 1      | Header 2 |
+| ----------- | ----------- |
+| Column One  |   Column Two  |
+| Column One  |   Column Two  |`}
+/>
+
+#### <a name="horizontalr"></a>Horizontal Rule
+
+A horizontal rule is used to separate sections of content. These can be created in Markdown by adding three or more of either an asterisk `*`, an underscore `_`, or a dash `-` on a single line.
+
+<MarkdownEditor
+    client:visible
+    defaultValue={`This is text above a horizontal rule
+
+---
+
+This is between horizontal rules
+
+---
+
+This is also between an HR
+
+---
+
+This is below a horizontal rule
+`}
+/>
+
+#### <a name="code"></a>Code
+
+The last Markdown element that I want to discuss is displaying code in Markdown. This is one of the most common uses for Markdown. Code can be displayed in two ways in your Markdown. You can display code inline or in code blocks.
+
+For inline code, simply wrap your code in three backtick \` characters. This is great for displaying small code snippets within a paragraph.
+
+For displaying larger blocks of code, you can open a code block with three backticks \`, move on to the next line, and then write your code. Close out your code block by adding three more backticks \` on a new line under your code.
+
+You can also specify the language of your code by adding the language name after the opening backticks on the same line. This is helpful if you have a flavor of Markdown that supports the extended syntax highlighting feature - which nearly every Markdown flavor does.
+
+<MarkdownEditor
+    client:visible
+    defaultValue={`This is \`\`\`inline code\`\`\` for smaller snippets.
+
+\`\`\`js
+// This is a block of javascript code
+const coding = life;
+\`\`\`
+`}
+/>
+
+One thing to notice, though, is that the embedded Markdown editor does not support syntax highlighting. This is because this requires extra CSS and and JavaScript that is not loaded into the embedded editor. Here's the same code using the syntax highlighter built into my blog:
+
+```js
+// This is a block of javascript code
+const coding = life;
+```
+
+<br />
+***
+
+Markdown is a very powerful tool that can be used to style text, display code, and format text in a visual way. It is a very common feature on the web, and is actually very simple to learn. Hopefully this post helps you to understand the basics of Markdown and gives you a head start on implementing Markdown on your own projects. Feel free to bookmark this article and return to it often as a reference guide. I still refer back to it when I am writing in Markdown.
