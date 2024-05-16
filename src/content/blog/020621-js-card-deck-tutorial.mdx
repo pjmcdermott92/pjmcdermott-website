@@ -1,0 +1,579 @@
+---
+title: 'Build a JavaScript Card Deck with Me!'
+description: "Let's build a JavaScript card deck - with LIVE DEMO - complete with a cool 3D flip animation from scratch! You only need to know the basics of HTML, CSS, and JavaScript to build this thing. Come have some fun with me!"
+post_date: 2021-02-06
+author: 'Patrick McDermott'
+image: 'card-deck-tut.png'
+tags: ['development', 'tutorial']
+slug: build-a-javascript-card-deck
+---
+
+import { Image } from 'astro:assets';
+import Link from '../../components/Link.astro';
+import initScreenshot from './images/card-deck-tut/initial-markup-screenshot.png';
+import styledScreenshot from './images/card-deck-tut/with-css-screenshot.png';
+
+This is a simple card deck shuffling game that I built with vanilla JavaScript, HTML, and CSS. I created this game in response to a fellow developer's coding question for a job interview, and I thought that it would be fun to share a little tutorial about it here.
+
+You don't need to know a lot to complete this tutorial; just a basic understanding of HTML, CSS, and Javascript - particularly ES6.
+
+Without further ado, let's jump in!
+
+### Setup
+
+Open a blank folder in your favorite text editor (for me, this is VSCode). Then, create four new files:
+
+-   index.html
+-   style.css
+-   cards.js
+-   deck.js
+
+Inside of the HTML file, create an HTML5 boilerplate and add in the markup for the application:
+
+Make a reference to `style.css` and `card.js`. For this tutorial, we will be using JavaScript modules, so be sure to include the `type="module"` attribute when linking the JavaScript to the HTML.
+
+Add in an `H1` tag for the page header, with the title of _JavaScript Card Deck_.
+
+Add an `H3` tag that instructs the user on what to do. We will also add a custom `data-message` attribute to the h3 so that we can manipulate it in JavaScript (for more info on custom data attributes and why I use them in JavaScript, check out my blog post about [Why I Use Custom Data Attributes for Selecting Elements in JavaScript](/blog/why-i-use-custom-data-attributes-for-selecting-elements-in-javascript))
+
+Create a `div` element with a class name of `container`. This will be the main wrapper for our card deck.
+
+Inside of the `container` div, create another div and add three classes to this div: `card-deck`, `is-cards`, `full-deck`. Also add a custom data attribute `data-card-deck` to this div.
+
+Inside of this div, create another, empty div with a class name of `flip-overlay` and a `data-flip` attribute.
+
+Copy the back of the card image SVG code into the HTML file.
+
+> For our card, we are using an SVG image to represent the back of the card. SVG images are written in XML. Don't worry; you don't need to understand the XML that makes up the card back image. It is beyond the scope of this tutorial. Just simply copy and past the code snippet below into your code inside of the div the the `data-card-deck`, just below the `flip-overlay` div.
+
+```xml
+     <svg width="224" height="303">
+        <clipPath id="r"><rect x=".5" y=".5" width="224" height="288" rx="8"/></clipPath>
+        <g clip-path="url(#r)">
+        <path fill="#FFF" d="m0,0h224v288H0"/>
+        <path stroke="#D11209" stroke-width="430" stroke-dasharray="3.67" d="m0,294 306-303"/>
+        </g>
+        <rect stroke="#000" stroke-width=".5" x=".5" y=".5" width="224" height="288" rx="8" fill="none"/>
+    </svg>
+```
+
+Below the `data-card-deck` div, create another div with the class name of `card-slot` and a `data-card-slot`
+attribute. This will be an empty div, so just close it off and don't add anything inside of it.
+
+Outside and below the `container` div, create another `H3` element with the following content in it:
+
+    ```html
+    <h3>Cards Remaining: <span data-cards-count>52</span></h3>
+    ```
+
+    This will be a counter for the cards remaining, and we will use the `span` element with the `data-cards-count` attribute to update the card count when we flip over a card.
+
+Your final markup should now look like this:
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>JavaScript Card Deck</title>
+        <link rel="stylesheet" href="./style.css" />
+        <script src="./cards.js" type="module"></script>
+    </head>
+    <body>
+        <h1>JavaScript Card Deck</h1>
+        <h3 data-message>Click on the stack of cards to deal a new card.</h3>
+        <div class="container">
+            <div class="card-deck is-cards full-deck" data-card-deck>
+                <div class="flip-overlay" data-flip></div>
+                <svg width="224" height="303">
+                    <clipPath id="r">
+                        <rect x=".5" y=".5" width="224" height="288" rx="8" />
+                    </clipPath>
+                    <g clip-path="url(#r)">
+                        <path fill="#FFF" d="m0,0h224v288H0" />
+                        <path
+                            stroke="#D11209"
+                            stroke-width="430"
+                            stroke-dasharray="3.67"
+                            d="m0,294 306-303"
+                        />
+                    </g>
+                    <rect
+                        stroke="#000"
+                        stroke-width=".5"
+                        x=".5"
+                        y=".5"
+                        width="224"
+                        height="288"
+                        rx="8"
+                        fill="none"
+                    />
+                </svg>
+            </div>
+            <div class="card-slot" data-card-slot></div>
+        </div>
+        <h3>Cards Remaining: <span data-cards-count>52</span></h3>
+    </body>
+</html>
+```
+
+This takes care of the HTML markup for our card deck. Let's preview what we have so far by opening the HTML document up in a web browser.
+
+> NOTE: You will need to use a server to open the document, since we are using JavaScript modules. The easiest way to do this (if you are using VSCode) is to use the `live server` extension. Assuming that you have this extension installed, right-click on your `index.html` file and click `Open With Live Server`. A new browser window should open up to `http://localhost:5500`, and you should see something like this:
+
+<Image src={initScreenshot} alt='Initial, unstyled card deck' />
+
+### Styling our Card Deck
+
+Now it's time to add some CSS styles to our card deck app to make it look prettier! The CSS for this app is simple, and there is not a lot of it. Simply copy all of the CSS below into your `style.css` file:
+
+```css
+body {
+    background-color: #333;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    user-select: none;
+}
+
+h1 {
+    color: #fff;
+    font-size: 3em;
+}
+h3 {
+    color: #fff;
+    font-size: 1.2rem;
+}
+
+.container {
+    position: relative;
+    display: flex;
+    gap: 3rem;
+    margin-top: 3rem;
+}
+
+.card-deck {
+    width: 14rem;
+    height: 18rem;
+    border: 1px solid #ccc;
+    border-radius: 1rem;
+    cursor: pointer;
+    perspective: 1000px;
+}
+
+.flip-overlay {
+    position: absolute;
+    width: 95%;
+    height: 100%;
+    transition: transform 0.2s;
+    transform-style: preserve-3d;
+    border-radius: 1rem;
+    animation: flip;
+}
+
+.flip-overlay.flip {
+    transform: rotateY(180deg) translateX(-18rem);
+    background-color: #fff;
+}
+.card-deck > svg {
+    visibility: hidden;
+}
+.card-deck.is-cards > svg {
+    visibility: visible;
+}
+
+.full-deck {
+    box-shadow: 0 -1px 1px rgba(0, 0, 0, 0.15), 0 -10px 0 -5px #eee,
+        0 -10px 1px -4px rgba(0, 0, 0, 0.15), 0 -20px 0 -10px #eee,
+        0 -20px 1px -9px rgba(0, 0, 0, 0.15);
+}
+
+.card-slot {
+    width: 14rem;
+}
+.card {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 14rem;
+    height: 18rem;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 1rem;
+    font-size: 5rem;
+}
+
+.card::before,
+.card::after {
+    content: attr(data-card-value);
+    position: absolute;
+    font-size: 3rem;
+}
+
+.card::before {
+    top: 1rem;
+    left: 1rem;
+}
+.card::after {
+    right: 1rem;
+    bottom: 1rem;
+    transform: rotate(180deg);
+}
+
+.card.red {
+    color: #f00;
+}
+.card.black {
+    color: #000;
+}
+```
+
+The CSS is straightforward. You probably noticed that we are using <Link isExternal href="https://css-tricks.com/snippets/css/a-guide-to-flexbox/" text="flexbox" /> for a lot of our layout. This is because flexbox is super easy to use and makes laying elements out much easier.
+
+Our application will now look much better with the CSS added. Your card deck should now look like this:
+
+<Image src={styledScreenshot} alt='Much better with some CSS!' />
+
+### The JavaScript
+
+Now we are ready for the most fun part of our application: the JavaScript! This is where everything comes together, and we take our card deck from a static HTML page to an interactive card deck!
+
+Let's start with our `deck.js` file, as this is the basis for the entire card deck.
+
+In the `deck.js` file, let's create two constants - one for our card suites, and one for our card values (from A-K - just like a real card deck).
+
+Because these will be constant variables, it is common practice to name them in all uppercase. These will each be an array, one with the card suits, and one with the values:
+
+```js
+const SUITS = ['♠', '♥', '♦', '♣'];
+const VALUES = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
+```
+
+Next, let's create our Deck class. I opted to use ES6 classes for this project. Since we are using JS Modules and will need to import this class into our `cards.js` file in just a few minutes, we are going to export our deck class:
+
+Create a class that is exported as the default export.
+
+Inside of this class, instantiate the class's `constructor` method and set the value of `cards` to a fresh deck. We will pass in the `freshDeck()` function as an argument to the class.
+
+Add a method called `pop()` to the class that simply removes and returns the next item in the cards array.
+Create a method called `shuffle()` inside of the class that will perform a <Link isExternal href="https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle" text="Fisher-Yates Shuffle" /> algorithm to shuffle our card deck.
+
+```js
+export default class Deck {
+    constructor(cards = freshDeck()) {
+        this.cards = cards
+    }
+
+    get numberOfCards() {
+        return this.cards.length
+    }
+
+    pop() {
+        return this.cards.shift()
+    }
+
+    /* Perform a Fisher-Yates Shuffle to effectively shuffle the cards */
+    shuffle() {
+        for (let i = this.numberOfCards - 1; i > 0; i--) {
+            const newIndex = Math.floor(Math.random() * (i + 1))
+            const oldValue = this.cards[newIndex]
+            this.cards[newIndex] = this.cards[i]
+            this.cards[i] = oldValue
+        }
+    }
+}
+```
+
+Next, we will create our Card class that will define what each card looks like:
+
+Below the `Deck` class that we created, add a new class called `Card`. We do not need to export this class, as it will only be used within our `Deck` class to generate each card in a deck.
+
+Inside the constructor of the `Card` class, pass in a `suit` and a `value` as arguments, and then assign these to the class.
+Create a getter for getting the color of the card (either black for clubs and spades, or red for hearts and diamonds - again, just like a standard card deck).
+
+Create method called `createHtml` that will build the HTML template for our card. This method creates a `div` element that represents our card, adds an inner text element with the value being the suit, adds a class name of `card` and a class name with the current card color, and finally adds a custom data attribute `data-card-value` with the value being the current value and suite of the card.
+
+The rendered HTML will look like something like this:
+
+```html
+<div class="card red" data-card-value="5♥">♥</div>
+```
+
+Here is the entire Card class:
+
+```js
+class Card {
+    constructor(suit, value) {
+        this.suit = suit
+        this.value = value
+    }
+
+    get color() {
+        return this.suit === '♣' || this.suit === '♠' ? 'black' : 'red'
+    }
+
+    createHtml() {
+        const cardDiv = document.createElement('div')
+        cardDiv.innerText = this.suit
+        cardDiv.classList.add('card', this.color)
+        cardDiv.dataset.cardValue = `${this.value} ${this.suit}`
+        return cardDiv
+    }
+}
+```
+
+The last thing we need in this file is a function called `freshDeck()` that will map over our `SUITS` array and our `VALUES` array and return a flattened array with 52 different items in it - one for each value, in each suit.
+
+```js
+function freshDeck() {
+    return SUITS.flatMap(suit => {
+        return VALUES.map(value => {
+            return new Card(suit, value)
+        })
+    })
+}
+```
+
+This is all that we will need to do in the `deck.js` file to generate a deck of cards. Let's move into the `cards.js` file and complete the build of this application. This file, by far will have the most code in it.
+
+First off, let's import our `Deck` class from our `deck.js` file into our `cards.js` file, so that we have access to it and can us it in a bit. At the top of the `cards.js` file, add the following line:
+
+```js
+import Deck from './deck.js'
+```
+
+Next, let's select all of our different elements from our HTML that we will be manipulating with JavaScript. This is where the custom `data-` attributes on our markup elements will come in use, as we will use JavaScript's built-in `querySelector` method to grab each element:
+
+```js
+const cardDeck = document.querySelector('[data-card-deck]')
+const cardSlot = document.querySelector('[data-card-slot]')
+const message = document.querySelector('[data-message]')
+const flipEffectEl = document.querySelector('[data-flip]')
+const cardCount = document.querySelector('[data-cards-count]')
+```
+
+Let's also declare some variables that we will dynamically change to represent the state of our card deck. Since these are variables that will be changed, we will need to use the `let` keyword, as the `const` keyword creates read-only **constant** variables that cannot be reassigned.
+
+As a neat trick, we can also declare all of these needed variables on a single line, with a single `let` statement:
+
+```js
+let deckOfCards, inRound, allowFlip, stop
+```
+
+### Connecting the Dots
+
+All of our set up work is done! It is now time to add the interactivity to our card deck, and turn it into something exciting.
+
+Let's start by adding an event listener to our `cardDeck` element that we selected from the DOM:
+
+```js
+cardDeck.addEventListener('click', () => {
+    if (stop) {
+        brandNewDeck()
+        return
+    }
+    animateCardFlip()
+});
+```
+
+This click event listener is **listening** for a click on the card deck that we created. If there is a click on the deck, it will first check to see if the `stop` variable we declared is truthy. If it is, then it means that we have reached the end of the deck, and it will generate a brand new deck for us. Otherwise, it will simply flip a card over by calling the `animateCardFlip()` function that we are going to create in just a moment.
+
+Speaking of that, let's create the `animateCardFlip()` function now:
+
+```js
+function animateCardFlip() {
+    if (inRound) {
+        allowFlip = false
+        flipEffectEl.classList.add('flip')
+        setTimeout(() => {
+            cleanBeforeDeal()
+            dealCard()
+            flipEffectEl.classList.remove('flip')
+        }, 200)
+    } else {
+        flipEffectEl.classList.add('flip')
+        setTimeout(() => {
+            dealCard()
+            flipEffectEl.classList.remove('flip')
+        }, 200)
+    }
+}
+```
+
+This function will:
+
+-   Add a class name of `flip` to the `flip-overlay` div in our HTML to create a 3D flipping animation.
+-   Once the animation is added, a timeout will be set to add a delay and allow the animation to complete
+-   After the 1/5 of a second (200ms) delay is completed, the `cleanBeforeDeal()` function that we have not yet created will be called, as well as the `dealCard()` function that we are also yet to create. The `flip` class will also be removed from the `flip-overlay` div, to reset it and get it ready for the next flip.
+
+Next, let's create our `brandNewDeck()` function so that we can generate a new card deck:
+
+```js
+function brandNewDeck() {
+    deckOfCards = new Deck()
+    deckOfCards.shuffle()
+    stop = false
+    cleanBeforeDeal()
+    cardDeck.classList.add('full-deck')
+    cardDeck.classList.add('is-cards')
+    message.innerHTML = 'Click on the stack of cards to deal a new card.'
+    countDealtCards()
+}
+```
+
+This function instantiates a new instance of the `Deck` class, shuffles the deck, and resets the app state by returning the variables to their starting values. It also adds on a couple of classes to our DOM elements in order to apply the visual effects of a new card deck.
+
+Next, let's work on our `cleanBeforeDeal()` and `dealCard()` functions that we have already called in our code, but have not yet declared:
+
+```js
+function cleanBeforeDeal() {
+    inRound = false
+    allowFlip = true
+    cardSlot.innerHTML = ''
+}
+
+function dealCard() {
+    if (!allowFlip) return
+    inRound = true
+    const currentCard = deckOfCards.pop()
+    cardSlot.appendChild(currentCard.createHtml())
+    countDealtCards()
+    isDeckEmpty()
+}
+```
+
+The `cleanBeforeDeal()` function simple sets the initial starting state for our app. The `dealCard()` function then handles the logic of flipping a card, recounting the card deck to determine the remaining amount of cards that have not been flipped, and then checks to make sure that there are still cards to flip.
+
+Let's create these last two functions: `isDeckEmpty()` and `contDealtCards()` now:
+
+```js
+function isDeckEmpty() {
+    if (deckOfCards.numberOfCards === 0) {
+        stop = true
+        cardDeck.classList.remove('is-cards')
+        message.innerText = 'Click on the empty deck to shuffle a new deck of cards.'
+    }
+}
+
+function countDealtCards() {
+    cardCount.innerText = deckOfCards.numberOfCards
+    const card = cardSlot.querySelector('div')
+    if (deckOfCards.numberOfCards < 51) {
+        card.classList.add('full-deck')
+    }
+    if (deckOfCards.numberOfCards < 2) {
+        cardDeck.classList.remove('full-deck')
+    }
+}
+```
+
+The `isDeckEmpty()` function checks the `Deck` class to see if there are still cards left in the cards array. If not, it will set the ending state of our game, remove the "stacked" cards class from our HTML, and prompt the user to click and generate a new deck of cards.
+
+The `countDealtCards()` function simply counts the number of cards, updates the count in the HTML, and applies some styles based on the remaining number of cards.
+
+Now, all that is left to do is to invoke the `brandNewDeck()` function for the first time to get the game working! Let's put this in our JavaScript below our event listener.
+
+Your final `cards.js` file should look like this:
+
+```js
+import Deck from './deck.js'
+
+const cardDeck = document.querySelector('[data-card-deck]')
+const cardSlot = document.querySelector('[data-card-slot]')
+const message = document.querySelector('[data-message]')
+const flipEffectEl = document.querySelector('[data-flip]')
+const cardCount = document.querySelector('[data-cards-count]')
+
+let deckOfCards, inRound, allowFlip, stop
+
+cardDeck.addEventListener('click', () => {
+    if (stop) {
+        brandNewDeck()
+        return
+    }
+    animateCardFlip()
+});
+
+brandNewDeck()
+
+function animateCardFlip() {
+    if (inRound) {
+        allowFlip = false
+        flipEffectEl.classList.add('flip')
+        setTimeout(() => {
+            cleanBeforeDeal()
+            dealCard()
+            flipEffectEl.classList.remove('flip')
+        }, 200)
+    } else {
+        flipEffectEl.classList.add('flip')
+        setTimeout(() => {
+            dealCard()
+            flipEffectEl.classList.remove('flip')
+        }, 200)
+    }
+}
+
+function brandNewDeck() {
+    deckOfCards = new Deck()
+    deckOfCards.shuffle()
+    stop = false
+    cleanBeforeDeal()
+    cardDeck.classList.add('full-deck')
+    cardDeck.classList.add('is-cards')
+    message.innerHTML = 'Click on the stack of cards to deal a new card.'
+    countDealtCards()
+}
+
+function cleanBeforeDeal() {
+    inRound = false
+    allowFlip = true
+    cardSlot.innerHTML = ''
+}
+
+function dealCard() {
+    if (!allowFlip) return
+    inRound = true
+    const currentCard = deckOfCards.pop()
+    cardSlot.appendChild(currentCard.createHtml())
+    countDealtCards();
+    isDeckEmpty();
+}
+
+function isDeckEmpty() {
+    if (deckOfCards.numberOfCards === 0) {
+        stop = true
+        cardDeck.classList.remove('is-cards')
+        message.innerText = 'Click on the empty deck to shuffle a new deck of cards.'
+    }
+}
+
+function countDealtCards() {
+    cardCount.innerText = deckOfCards.numberOfCards
+    const card = cardSlot.querySelector('div')
+    if (deckOfCards.numberOfCards < 51) {
+        card.classList.add('full-deck')
+    }
+    if (deckOfCards.numberOfCards < 2) {
+        cardDeck.classList.remove('full-deck')
+    }
+}
+```
+
+### Test our work
+
+Now, all that's left to do is to test our card game! Head over to your browser and click on the red card deck, and you should see a nice card flip animation, as your game cycles through all 52 cards. Once all cards have been flipped, you can click the empty deck to reshuffle and keep going indefinitely!
+
+**Congratulations!** You have just built a card deck game from scratch using Vanilla HTML/CSS/JavaScript! Great job!
+
+### Live Demo
+
+Here is a live demo of our card game: <Link isExternal href="https://javascriptcards.netlify.app/" text="View Demo" />
+
+And here is a link to the Github source code: <Link isExternal href="https://github.com/pjmcdermott92/vanilla-js-card-deck" text="Github Repo" />
